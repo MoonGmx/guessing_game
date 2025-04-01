@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <div class="container">
+        <h1>📞 Contact Manager</h1>
+
+        <form action="/" method="get">
+            <input type="text" name="q" placeholder="Search contacts..." value="{{ query }}">
+            <button type="submit">Search</button>
+        </form>
+
+        <form action="/add" method="post">
+            <input type="text" name="name" placeholder="Name" required>
+            <input type="text" name="phone" placeholder="Phone" required>
+            <input type="email" name="email" placeholder="Email" required>
+            <button type="submit">Add Contact</button>
+        </form>
+
+        <ul>
+            {% for contact in contacts %}
+            <li>
+                <strong>{{ contact[1] }}</strong> - {{ contact[2] }} - {{ contact[3] }}
+                <a href="/delete/{{ contact[0] }}" class="delete-btn">🗑 Delete</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+</body>
+</html>
