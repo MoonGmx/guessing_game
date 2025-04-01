@@ -1,33 +1,89 @@
 body {
-    font-family: Arial, sans-serif;
-    background: #8e44ad;
-    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(120deg, #7B1FA2, #E1BEE7);
     text-align: center;
+    padding: 50px;
+    color: #fff;
 }
 
 .container {
-    max-width: 500px;
-    margin: 20px auto;
-    background: #ffffff;
+    background: rgba(255, 255, 255, 0.1);
     padding: 20px;
     border-radius: 10px;
-    color: #333;
+    box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.2);
+    display: inline-block;
+    transition: transform 0.3s ease-in-out;
 }
 
-input, button {
-    width: 100%;
+.container:hover {
+    transform: scale(1.05);
+}
+
+h1, h2 {
+    color: white;
+}
+
+input {
     padding: 10px;
-    margin: 5px 0;
+    margin: 5px;
+    font-size: 16px;
+    border: 2px solid #E1BEE7;
     border-radius: 5px;
 }
 
 button {
-    background: #8e44ad;
-    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    background: #8E24AA;
     border: none;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+}
+
+button:hover {
+    background: #6A1B9A;
+    transform: scale(1.1);
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    background: rgba(255, 255, 255, 0.2);
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .delete-btn {
     color: red;
+    font-size: 18px;
     text-decoration: none;
+    cursor: pointer;
+}
+
+.share-btn {
+    background: #4A148C;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.share-btn:hover {
+    background: #311B92;
 }
