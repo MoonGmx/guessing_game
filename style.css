@@ -1,0 +1,33 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #8e44ad;
+    color: #fff;
+    text-align: center;
+}
+
+.container {
+    max-width: 500px;
+    margin: 20px auto;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    color: #333;
+}
+
+input, button {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+}
+
+button {
+    background: #8e44ad;
+    color: white;
+    border: none;
+}
+
+.delete-btn {
+    color: red;
+    text-decoration: none;
+}
