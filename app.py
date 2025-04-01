@@ -1,36 +1,23 @@
-from flask import Flask, render_template, request, redirect, url_for
-import sqlite3
+from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///contacts.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
-DATABASE = "database/contacts.db"
+# Contact Model
+class Contact(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    phone = db.Column(db.String(15), nullable=False)
+    email = db.Column(db.String(100), nullable=False)
 
-# Function to connect to the database
-def connect_db():
-    return sqlite3.connect(DATABASE)
-
-# Initialize database and create table
-with connect_db() as conn:
-    cursor = conn.cursor()
-    cursor.execute('''CREATE TABLE IF NOT EXISTS contacts 
-                      (id INTEGER PRIMARY KEY, name TEXT, phone TEXT, email TEXT)''')
-    conn.commit()
-
-# Home Page - Show Contacts & Search
+# Home Page - List Contacts
 @app.route('/')
-def home():
-    query = request.args.get('q', '')  # Get search query if exists
-    conn = connect_db()
-    cursor = conn.cursor()
-    
-    if query:
-        cursor.execute("SELECT * FROM contacts WHERE name LIKE ?", ('%' + query + '%',))
-    else:
-        cursor.execute("SELECT * FROM contacts")
-    
-    contacts = cursor.fetchall()
-    conn.close()
-    return render_template('index.html', contacts=contacts, query=query)
+def index():
+    contacts = Contact.query.all()
+    return render_template('index.html', contacts=contacts)
 
 # Add Contact
 @app.route('/add', methods=['POST'])
@@ -38,25 +25,26 @@ def add_contact():
     name = request.form['name']
     phone = request.form['phone']
     email = request.form['email']
-    
-    conn = connect_db()
-    cursor = conn.cursor()
-    cursor.execute("INSERT INTO contacts (name, phone, email) VALUES (?, ?, ?)", (name, phone, email))
-    conn.commit()
-    conn.close()
-    
-    return redirect(url_for('home'))
+    new_contact = Contact(name=name, phone=phone, email=email)
+    db.session.add(new_contact)
+    db.session.commit()
+    return redirect(url_for('index'))
 
 # Delete Contact
 @app.route('/delete/<int:id>')
 def delete_contact(id):
-    conn = connect_db()
-    cursor = conn.cursor()
-    cursor.execute("DELETE FROM contacts WHERE id=?", (id,))
-    conn.commit()
-    conn.close()
-    
-    return redirect(url_for('home'))
+    contact = Contact.query.get(id)
+    db.session.delete(contact)
+    db.session.commit()
+    return redirect(url_for('index'))
+
+# Search Contact
+@app.route('/search')
+def search():
+    query = request.args.get('q', '').lower()
+    contacts = Contact.query.filter(Contact.name.ilike(f"%{query}%")).all()
+    return jsonify([{'id': c.id, 'name': c.name, 'phone': c.phone, 'email': c.email} for c in contacts])
 
 if __name__ == '__main__':
+    db.create_all()
     app.run(debug=True)
